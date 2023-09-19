@@ -1,8 +1,9 @@
 from django.core.validators import MinValueValidator
 from rest_framework import serializers
-from .models import OrderModel
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
+
+from .models import Order
 
 
 class OrderSerializer(serializers.Serializer):
@@ -14,15 +15,18 @@ class OrderSerializer(serializers.Serializer):
         max_digits=10,
         decimal_places=2,
     )
-    status = serializers.IntegerField(validators=[
-        MinValueValidator(0),
-        # MaxValueValidator(5)
-    ])
-    rowNum = serializers.IntegerField()
-    screenshot = serializers.CharField(max_length=255)
+    status = serializers.IntegerField(
+        validators=[
+            MinValueValidator(0),
+            # MaxValueValidator(5)
+        ],
+        required=False
+    )
+    rowNum = serializers.IntegerField(required=False)
+    screenshot = serializers.CharField(max_length=255, required=False, default='')
 
     def create(self, validated_data):
-        return OrderModel.objects.create(**validated_data)
+        return Order.objects.create(**validated_data)
 
     # def update(self, instance, validated_data):
     #     instance.orderId

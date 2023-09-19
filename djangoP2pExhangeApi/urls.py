@@ -16,9 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from orders.views import OrdersAPIView
+
+# jwt
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
+
+# views
+from orders.views import OrdersAPIList, OrderAPIUpdate, OrderAPIDestroy
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/orders', OrdersAPIView.as_view())
+
+    # jwt
+    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
+    # orders
+    path('api/v1/orders', OrdersAPIList.as_view()),  # get all / post
+    path('api/v1/orders/<int:pk>/', OrderAPIUpdate.as_view()),  # get,put,patch by id
+    path('api/v1/ordersdelete/<int:pk>/', OrderAPIDestroy.as_view()),  # delete by id
 ]

@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
-class OrderModel(models.Model):
+class Order(models.Model):
     orderId = models.CharField(max_length=255)
     date = models.DateTimeField(blank=False)
     card = models.CharField(null=False, max_length=16)
@@ -26,9 +26,9 @@ class OrderModel(models.Model):
     )
     screenshot = models.CharField(
         max_length=255,
-        default=None,
         blank=True,
-        null=True
+        default='',
+        # null=True # nullable value for CharField is not recommended in doc - https://stackoverflow.com/a/44272461
     )
 
     def __str(self):
