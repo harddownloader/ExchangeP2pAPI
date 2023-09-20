@@ -26,6 +26,7 @@ from rest_framework_simplejwt.views import (
 
 # views
 from orders.views import OrdersAPIList, OrderAPIUpdate, OrderAPIDestroy
+from partners.views import PartnersAPIList, get_users_as_json
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,4 +40,8 @@ urlpatterns = [
     path('api/v1/orders', OrdersAPIList.as_view()),  # get all / post
     path('api/v1/orders/<int:pk>/', OrderAPIUpdate.as_view()),  # get,put,patch by id
     path('api/v1/ordersdelete/<int:pk>/', OrderAPIDestroy.as_view()),  # delete by id
+
+    # partners (users)
+    # path('api/v1/partners', PartnersAPIList.as_view())
+    path('api/v1/partners', get_users_as_json)
 ]

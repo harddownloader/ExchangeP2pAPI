@@ -40,6 +40,7 @@ from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 #             return JsonResponse(serializer.data, status=201)
 #         return JsonResponse(serializer.errors, status=400)
 
+
 # get all / create one
 class OrdersAPIList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
@@ -52,6 +53,7 @@ class OrderAPIUpdate(generics.RetrieveUpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated, )
+
 
 # delete one
 class OrderAPIDestroy(generics.RetrieveDestroyAPIView):
