@@ -9,5 +9,22 @@
 </head>
 <body>
     <h1>ExchangeP2pAPI</h1>
+
+    <h3>How it works?</h3>
+
+    <ul>
+        <li>
+            <p>We issue you an access token which you will use to communicate with our API.</p>
+        </li>
+        <li>
+            <p>The partner calls our endpoint and sends data about the new order (which he received from his client). In this request, the client also sends us data about its endpoint, which we will need to call at the moment the order is closed (how should we inform the client that the order has been executed).</p>
+        </li>
+        <li>
+            <p>During the execution of the application, the partner can check its status. To do this, the client can contact the another endpoint by the number of his order.</p>
+        </li>
+        <li>
+            <p>When his application is executed, we will send all the data about the application to the endpoint, which he previously transmitted to us as a “callback”.</p>
+        </li>
+    </ul>
 </body>
 </html>
