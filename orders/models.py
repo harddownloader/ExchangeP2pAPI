@@ -1,10 +1,18 @@
+from django.conf import settings
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from partners.models import Partner
+
 
 class Order(models.Model):
-    orderId = models.CharField(max_length=255)
+    partner = models.ForeignKey(
+        Partner,
+        on_delete=models.CASCADE,
+    )
     date = models.DateTimeField(blank=False)
+    orderId = models.CharField(max_length=255)
     card = models.CharField(null=False, max_length=16)
     payoutAmount = models.DecimalField(
         max_digits=10,

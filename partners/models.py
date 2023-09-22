@@ -5,9 +5,13 @@ from django.dispatch import receiver
 
 
 class Partner(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=255, blank=True)
-    google_doc_id = models.CharField(max_length=100, blank=True)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    token = models.CharField(blank=True, max_length=255)
+    google_doc_id = models.CharField(blank=True, max_length=100)
 
     class Meta:
         db_table = 'auth_partner'
