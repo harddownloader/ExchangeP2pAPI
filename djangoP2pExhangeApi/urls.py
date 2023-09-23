@@ -30,7 +30,7 @@ from orders.views import (
     OrderAPIUpdate,
     OrderAPIDestroy,
 )
-from partners.views import PartnersAPIList, get_users_as_json
+from partners.views import PartnersAPIList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,6 +49,5 @@ urlpatterns = [
     path('api/v1/ordersdelete/<int:pk>/', OrderAPIDestroy.as_view()),  # delete by id
 
     # partners (users)
-    # path('api/v1/partners', PartnersAPIList.as_view())
-    path('api/v1/partners', get_users_as_json)
+    path('api/v1/partners', PartnersAPIList.as_view()),
 ]

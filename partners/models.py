@@ -9,6 +9,7 @@ class Partner(models.Model):
         User,
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name='partner_profile'
     )
     token = models.CharField(blank=True, max_length=255)
     google_doc_id = models.CharField(blank=True, max_length=100)
