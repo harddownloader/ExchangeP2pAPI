@@ -138,3 +138,9 @@ GitHub.sublime-settings
 
 # idea
 .idea
+
+# credentials
+credentials.json
+credentials2.json
+token.json
+

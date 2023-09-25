@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "djangoP2pExhangeApi/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "djangoP2pExhangeApi/wsgi.py"
+    }
+  ]
+}
