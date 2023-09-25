@@ -46,7 +46,11 @@ urlpatterns = [
     # for admin
     # for partner
     path('api/v1/orders/<int:pk>/', OrderAPIUpdate.as_view()),  # get,put,patch by id
-    path('api/v1/ordersdelete/<int:pk>/', OrderAPIDestroy.as_view()),  # delete by id
+    path(
+        'api/v1/ordersdelete/<int:pk>/',
+        OrderAPIDestroy.as_view(),
+        name='delete-orders'
+    ),  # delete by id
 
     # partners (users)
     path('api/v1/partners', PartnersAPIList.as_view()),

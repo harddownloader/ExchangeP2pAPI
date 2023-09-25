@@ -1,19 +1,8 @@
-import sys
-import os
-from datetime import datetime
 from dateutil import parser
 import logging
-
-from django.forms import model_to_dict
-from rest_framework import generics, viewsets, mixins, status
-from django.shortcuts import render
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
+from rest_framework import generics, status
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import GenericViewSet
-from rest_framework import filters
 
 from common.spreadsheets import insert_new_row
 
@@ -30,7 +19,6 @@ logger = logging.getLogger(__name__)
 class OrdersAPIList(generics.ListCreateAPIView):
     model = Order
 
-    logger.info("Houston, we have a %s", "interesting problem", exc_info=1)
     # queryset = Order.objects.all()
     # serializer_class = OrderSerializer
     # permission_classes = (IsAuthenticated, )
@@ -74,7 +62,13 @@ class OrdersAPIList(generics.ListCreateAPIView):
             date=serializer.data['date'],
             orderId=serializer.data['orderId'],
             card=serializer.data['card'],
-            payoutAmount=serializer.data['payoutAmount']
+            payoutAmount=serializer.data['payoutAmount'],
+
+            # callback request
+            callbackUrl=serializer.data['callbackUrl'],
+            callbackMethod=serializer.data['callbackMethod'],
+            callbackHeaders=serializer.data['callbackHeaders'],
+            callbackBody=serializer.data['callbackBody'],
         )
         date_format = '%Y-%m-%d %H:%M:%S'
         date_obj = parser.parse(serializer.data['date'], ignoretz=True)
@@ -98,7 +92,6 @@ class OrdersAPIList(generics.ListCreateAPIView):
 
 # update one
 class OrderAPIUpdate(generics.RetrieveUpdateAPIView):
-    logger.info('OrderAPIUpdate', exc_info=1)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = (IsAdminUser, )
@@ -106,8 +99,8 @@ class OrderAPIUpdate(generics.RetrieveUpdateAPIView):
 
 # delete one
 class OrderAPIDestroy(generics.RetrieveDestroyAPIView):
-    logger.info('OrderAPIDestroy', exc_info=1)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = (IsAdminOrReadOnly, )
+    permission_classes = (IsAdminUser, )
+
 
