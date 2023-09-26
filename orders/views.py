@@ -15,6 +15,7 @@ from partners.models import Partner
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # get all / create one
 class OrdersAPIList(generics.ListCreateAPIView):
     model = Order

@@ -52,3 +52,14 @@ class Order(models.Model):
 
     def __str(self):
         return self.orderId
+
+
+# class OrderCallback(models.Model):
+#     order = models.ForeignKey(
+#         Order,
+#         on_delete=models.CASCADE,
+#     )
+#     callbackUrl = models.URLField()
+#     callbackMethod = models.CharField(max_length=8)
+#     callbackHeaders = models.TextField()
+#     callbackBody = models.TextField()
