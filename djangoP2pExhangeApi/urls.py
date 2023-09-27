@@ -31,9 +31,12 @@ from apps.orders.views import (
     OrderAPIDestroy,
 )
 from apps.partners.views import PartnersAPIList
+from .views import index
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', index),
 
     # jwt
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
