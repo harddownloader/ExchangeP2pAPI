@@ -29,4 +29,4 @@ def create_user_partner(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)  # signal used to save a object related to user instance
 def save_user_partner(sender, instance, **kwargs):
-    instance.partner.save()
+    instance.partner_profile.save()

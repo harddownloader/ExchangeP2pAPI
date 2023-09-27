@@ -40,7 +40,7 @@ def get_credentials():
             not credentials and
             not os.path.exists(GOOGLE_SPREADSHEETS_CREDENTIALS_FILE) and
             "GOOGLE_CREDENTIALS_INFO" in os.environ and
-            os.environ.get('GOOGLE_CREDENTIALS_INFO') is not None
+            os.getenv('GOOGLE_CREDENTIALS_INFO') is not None
     ):
         init_spreadsheets_credentials_json_file(GOOGLE_SPREADSHEETS_CREDENTIALS_INFO)
 
