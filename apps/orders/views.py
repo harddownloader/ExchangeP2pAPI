@@ -8,9 +8,8 @@ from common.spreadsheets import insert_new_row
 
 from .models import Order
 from .serializers import OrderSerializer
-from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
-from partners.models import Partner
+from apps.partners.models import Partner
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
     # apps
-    'orders.apps.OrdersConfig',
-    'partners.apps.PartnersConfig'
+    'apps.orders.apps.OrdersConfig',
+    'apps.partners.apps.PartnersConfig'
 ]
 
 MIDDLEWARE = [

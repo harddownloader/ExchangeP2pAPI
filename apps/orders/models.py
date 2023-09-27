@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 
-from partners.models import Partner
+from apps.partners.models import Partner
 from common.util.is_json import is_json
 
 

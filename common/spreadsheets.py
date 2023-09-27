@@ -13,42 +13,61 @@ from common.util.const import (
     GOOGLE_SPREADSHEETS_TOKEN_FILE,
     GOOGLE_SPREADSHEETS_CREDENTIALS_INFO,
 )
-from common.util.is_json import is_json
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
 # create credentials.json on first run app (from env data)
 def init_spreadsheets_credentials_json_file(cred_data: str):
-    print(type(GOOGLE_SPREADSHEETS_TOKEN_FILE))
-    print(GOOGLE_SPREADSHEETS_TOKEN_FILE)
-    with open(GOOGLE_SPREADSHEETS_TOKEN_FILE, "w") as token:
-        token.write(json.loads(cred_data))
+    with open(GOOGLE_SPREADSHEETS_CREDENTIALS_FILE, "w") as token:
+        token.write(
+            json.dumps(
+                json.loads(cred_data)
+            )
+        )
     return
 
 
-# add new row to google spreadsheets
-def insert_new_row(new_order, spreadsheet_id):
-    init_spreadsheets_credentials_json_file(GOOGLE_SPREADSHEETS_CREDENTIALS_INFO)
+def get_credentials():
     credentials = None
     if os.path.exists(GOOGLE_SPREADSHEETS_TOKEN_FILE):
-        credentials = Credentials.from_authorized_user_file(GOOGLE_SPREADSHEETS_TOKEN_FILE, SCOPES)
+        credentials = Credentials.from_authorized_user_file(
+            GOOGLE_SPREADSHEETS_TOKEN_FILE,
+            SCOPES
+        )
+
+    if (
+            not credentials and
+            not os.path.exists(GOOGLE_SPREADSHEETS_CREDENTIALS_FILE) and
+            "GOOGLE_CREDENTIALS_INFO" in os.environ and
+            os.environ.get('GOOGLE_CREDENTIALS_INFO') is not None
+    ):
+        init_spreadsheets_credentials_json_file(GOOGLE_SPREADSHEETS_CREDENTIALS_INFO)
 
     if not credentials or not credentials.valid:
         if credentials and credentials.expired and credentials.refresh_token:
             credentials.refresh(Request())
         else:
-            init_spreadsheets_credentials_json_file(GOOGLE_SPREADSHEETS_CREDENTIALS_INFO)
-            flow = InstalledAppFlow.from_client_secrets_file(GOOGLE_SPREADSHEETS_CREDENTIALS_FILE, scopes=SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                GOOGLE_SPREADSHEETS_CREDENTIALS_FILE,
+                scopes=SCOPES
+            )
             credentials = flow.run_local_server(port=0)
         with open(GOOGLE_SPREADSHEETS_TOKEN_FILE, "w") as token:
             token.write(credentials.to_json())
+
+    return credentials
+
+
+# add new row to google spreadsheets
+def insert_new_row(new_order, spreadsheet_id):
+    credentials = get_credentials()
 
     try:
         service = build("sheets", "v4", credentials=credentials)
         sheets = service.spreadsheets()
 
-        list = [
+        row_data = [
             [
                 new_order['date'],
                 new_order['orderId'],
@@ -58,12 +77,12 @@ def insert_new_row(new_order, spreadsheet_id):
         ]
         resource = {
             "majorDimension": "ROWS",
-            "values": list
+            "values": row_data
         }
-        range = "Sheet1!A:A";
+        table_range = "Sheet1!A:A"
         sheets.values().append(
             spreadsheetId=spreadsheet_id,
-            range=range,
+            range=table_range,
             body=resource,
             valueInputOption="USER_ENTERED"
         ).execute()
