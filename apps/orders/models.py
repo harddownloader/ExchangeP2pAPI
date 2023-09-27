@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 
-from partners.models import Partner
+from apps.partners.models import Partner
 from common.util.is_json import is_json
 
 
@@ -52,3 +52,14 @@ class Order(models.Model):
 
     def __str(self):
         return self.orderId
+
+
+# class OrderCallback(models.Model):
+#     order = models.ForeignKey(
+#         Order,
+#         on_delete=models.CASCADE,
+#     )
+#     callbackUrl = models.URLField()
+#     callbackMethod = models.CharField(max_length=8)
+#     callbackHeaders = models.TextField()
+#     callbackBody = models.TextField()

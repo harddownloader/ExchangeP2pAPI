@@ -25,12 +25,12 @@ from rest_framework_simplejwt.views import (
 )
 
 # views
-from orders.views import (
+from apps.orders.views import (
     OrdersAPIList,
     OrderAPIUpdate,
     OrderAPIDestroy,
 )
-from partners.views import PartnersAPIList
+from apps.partners.views import PartnersAPIList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
