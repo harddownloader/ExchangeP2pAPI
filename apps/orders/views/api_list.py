@@ -1,13 +1,12 @@
 from dateutil import parser
 import logging
 from rest_framework import generics, status
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from common.spreadsheets import insert_new_row
 
-from .models import Order
-from .serializers import OrderSerializer
+from apps.orders.models import Order
+from apps.orders.serializers import OrderSerializer
 
 from apps.partners.models import Partner
 
@@ -88,19 +87,3 @@ class OrdersAPIList(generics.ListCreateAPIView):
         result = OrderSerializer(order)
 
         return Response(result.data, status=status.HTTP_201_CREATED)
-
-
-# update one
-class OrderAPIUpdate(generics.RetrieveUpdateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    permission_classes = (IsAdminUser, )
-
-
-# delete one
-class OrderAPIDestroy(generics.RetrieveDestroyAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    permission_classes = (IsAdminUser, )
-
-
