@@ -30,6 +30,7 @@ from apps.orders.views import (
     OrderAPIUpdate,
     OrderAPIDestroy,
 )
+
 from apps.partners.views import PartnersAPIList
 from .views import index
 
