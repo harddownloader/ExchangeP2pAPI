@@ -28,12 +28,8 @@ def send_callback(
         callback_url,
         callback_method,
         callback_headers,
-        callback_body
+        data_bytes,
 ):
-    pprint.pprint({
-        'callback_body': callback_body,
-        'callback_body type': type(callback_body),
-    })
     public_key_path = os.path.join(settings.BASE_DIR, 'public_key.pem')
     private_key_path = os.path.join(settings.BASE_DIR, 'private_key.pem')
 
@@ -50,15 +46,11 @@ def send_callback(
         backend=default_backend()
     )
 
-    data_bytes = json.dumps({
-        'date': callback_body['date'],
-        'orderId': callback_body['orderId'],
-        'card': callback_body['card'],
-        'payoutAmount': callback_body['payoutAmount'],
-        'screenshot': callback_body['screenshot'],
-        'compensation': callback_body['compensation']
-    }, cls=DecimalEncoder).encode('utf-8')
-
+    signature = private_key.sign(
+        data_bytes,
+        padding.PKCS1v15(),
+        hashes.SHA256()
+    )
     encrypted_data = public_key.encrypt(
         data_bytes,
         padding.OAEP(
@@ -69,11 +61,19 @@ def send_callback(
     )
 
     # convert to string(base64)
-    received_encrypted_data_base64 = base64.b64encode(encrypted_data).decode('utf-8')
+    encrypted_data_base64 = base64.b64encode(encrypted_data).decode('utf-8')
+    signature_base64 = base64.b64encode(signature).decode('utf-8')
 
     body_content = {
-        'data': received_encrypted_data_base64
+        'data': encrypted_data_base64,
+        'signature': signature_base64,
     }
+    pprint.pprint({
+        'received_encrypted_data_base64': encrypted_data_base64,
+        'received_signature_base64': signature_base64,
+        'received_encrypted_data': encrypted_data,
+        'received_signature': signature
+    })
     headers_content = json.loads(callback_headers)
 
     if callback_method == 'GET':
@@ -118,32 +118,31 @@ class OrderAPIUpdate(generics.RetrieveUpdateAPIView):
         pprint.pprint({'status': request.data['status']})
         if request.data['status'] and request.data['status'] == 5:
             instance = self.get_object()
-            pprint.pprint({
-                'title': 'send request',
-                'callbackUrl': instance.callbackUrl,
-                'callbackMethod': instance.callbackMethod,
-                'callbackHeaders': instance.callbackHeaders,
-                'callbackBody': instance.callbackBody,
-                'order date': instance.date,
-                'order date type': type(instance.date),
-            })
 
         date_format = '%Y-%m-%d %H:%M:%S'
         date_str = instance.date.strftime(date_format)
+
+        custom_body_props = json.loads(instance.callbackBody)
+        order_body = {
+            'date': date_str,
+            'orderId': instance.orderId,
+            'card': instance.card,
+            "payoutAmount": instance.payoutAmount,
+            'screenshot': instance.screenshot,
+            'compensation': instance.compensation
+        }
+
+        combined_body = {
+            **custom_body_props,
+            **order_body
+        }
+        data_bytes = json.dumps(combined_body, cls=DecimalEncoder).encode('utf-8')
 
         send_callback(
             callback_url=instance.callbackUrl,
             callback_method=instance.callbackMethod,
             callback_headers=instance.callbackHeaders,
-            callback_body={
-                **json.loads(instance.callbackBody),
-                'date': date_str,
-                'orderId': instance.orderId,
-                'card': instance.card,
-                'payoutAmount': instance.payoutAmount,
-                'screenshot': instance.screenshot,
-                'compensation': instance.compensation
-            },
+            data_bytes=data_bytes,
         )
 
         return super().patch(request, *kwargs, *args)
