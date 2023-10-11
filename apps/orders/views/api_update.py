@@ -79,31 +79,31 @@ def send_callback(
     if callback_method == 'GET':
         requests.get(
             url=callback_url,
-            data=body_content,
+            json=body_content,
             headers=headers_content
         )
     elif callback_method == 'POST':
         requests.post(
             url=callback_url,
-            data=body_content,
+            json=body_content,
             headers=headers_content
         )
     elif callback_method == 'PUT':
         requests.put(
             url=callback_url,
-            data=body_content,
+            json=body_content,
             headers=headers_content
         )
     elif callback_method == 'PATCH':
         requests.patch(
             url=callback_url,
-            data=body_content,
+            json=body_content,
             headers=headers_content
         )
     elif callback_method == 'DELETE':
         requests.delete(
             url=callback_url,
-            data=body_content,
+            json=body_content,
             headers=headers_content
         )
 
