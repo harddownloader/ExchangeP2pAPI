@@ -67,11 +67,18 @@ def insert_new_row(new_order, spreadsheet_id):
         service = build("sheets", "v4", credentials=credentials)
         sheets = service.spreadsheets()
 
+        response = sheets.values().get(spreadsheetId=spreadsheet_id, range="Sheet1").execute()
+        values = response.get("values", [])
+        num_rows = len(values)
+
         row_data = [
             [
+                "",
+                "",
                 new_order['date'],
                 new_order['orderId'],
                 new_order['card'],
+                "",
                 new_order['payoutAmount'],
             ],
         ]
@@ -79,8 +86,9 @@ def insert_new_row(new_order, spreadsheet_id):
             "majorDimension": "ROWS",
             "values": row_data
         }
-        table_range = "Sheet1!A:A"
-        sheets.values().append(
+        table_range = f"Sheet1!A{num_rows+1}:G{num_rows+1}"
+
+        sheets.values().update(
             spreadsheetId=spreadsheet_id,
             range=table_range,
             body=resource,
