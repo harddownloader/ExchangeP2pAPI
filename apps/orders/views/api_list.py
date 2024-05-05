@@ -1,9 +1,15 @@
 from dateutil import parser
 import logging
+
+from sentry_sdk import capture_message
+
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from common.spreadsheets import insert_new_row
+# common
+from common.spreadsheets import add_order_into_table
+from common.util.const import MAIN_SPREADSHEET_DOC_TAB
+from common.util.error_codes import ERROR_CODES, INSERT_ORDER_INTO_SPREADSHEET
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderSerializer
@@ -50,7 +56,7 @@ class OrdersAPIList(generics.ListCreateAPIView):
 
         partner = Partner.objects.get(user_id=request.user.id)
 
-        if not partner.google_doc_id:
+        if not partner or not partner.google_doc_id:
             return Response(
                 'partner.google_doc_id not found',
                 status=status.HTTP_400_BAD_REQUEST
@@ -73,17 +79,24 @@ class OrdersAPIList(generics.ListCreateAPIView):
         date_obj = parser.parse(serializer.data['date'], ignoretz=True)
         date_str = date_obj.strftime(date_format)
 
-        insert_new_row(
-            new_order={
-                "date": date_str,
-                "orderId": serializer.data['orderId'],
-                "card": serializer.data['card'],
-                "payoutAmount": serializer.data['payoutAmount'],
-                # "status": 0, # status is text, and it will set automatically by spreadsheets
-            },
-            spreadsheet_id=partner.google_doc_id
-        )
-
+        try:
+            add_order_into_table(
+                new_order={
+                    "date": date_str,
+                    "orderId": serializer.data['orderId'],
+                    "card": serializer.data['card'],
+                    "payoutAmount": serializer.data['payoutAmount'],
+                    # "status": 0, # status is text, and it will set automatically by spreadsheets
+                },
+                spreadsheet_id=partner.google_doc_id,
+                sheet_name=MAIN_SPREADSHEET_DOC_TAB
+            )
+        except:
+            capture_message("Something went wrong with inserting new order into the google spreadsheet")
+            return Response({
+                "error": ERROR_CODES[INSERT_ORDER_INTO_SPREADSHEET].get_message(),
+                "code": ERROR_CODES[INSERT_ORDER_INTO_SPREADSHEET].get_code()
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         result = OrderSerializer(order)
 
         return Response(result.data, status=status.HTTP_201_CREATED)

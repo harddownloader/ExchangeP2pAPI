@@ -64,3 +64,5 @@ class Order(models.Model):
     def __str(self):
         return self.orderId
 
+    class Meta:
+        db_table_comment = 'income orders from partners'

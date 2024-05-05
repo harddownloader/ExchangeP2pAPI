@@ -1,5 +1,5 @@
 """
-URL configuration for djangoP2pExhangeApi project.
+URL configuration for djangoP2pExchangeApi project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -15,7 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from rest_framework import routers
 
 # jwt
 from rest_framework_simplejwt.views import (
@@ -29,11 +31,14 @@ from apps.orders.views import (
     OrdersAPIList,
     OrderAPIUpdate,
     OrderAPIDestroy,
+    P2PMarketOrdersViewSet,
 )
 
 from apps.partners.views import PartnersAPIList
 from .views import index
 
+router = routers.DefaultRouter()
+router.register(r'v1/p2p-orders', P2PMarketOrdersViewSet, basename='P2PMarketOrders')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,6 +50,7 @@ urlpatterns = [
     path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     # orders
+    path('api/', include(router.urls)),
     path('api/v1/orders', OrdersAPIList.as_view()),  # get all / post
 
     # for admin
