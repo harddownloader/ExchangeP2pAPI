@@ -8,8 +8,7 @@ from rest_framework.response import Response
 
 # common
 from common.spreadsheets import add_order_into_table
-from common.util.const import MAIN_SPREADSHEET_DOC_TAB
-from common.util.error_codes import ERROR_CODES, INSERT_ORDER_INTO_SPREADSHEET
+from common.exceptions import INSERT_ORDER_INTO_SPREADSHEET, CustomErrors
 
 from apps.orders.models import Order
 from apps.orders.serializers import OrderSerializer
@@ -23,10 +22,6 @@ logger = logging.getLogger(__name__)
 # get all / create one
 class OrdersAPIList(generics.ListCreateAPIView):
     model = Order
-
-    # queryset = Order.objects.all()
-    # serializer_class = OrderSerializer
-    # permission_classes = (IsAuthenticated, )
 
     def get_serializer_class(self):
         logger.info('get_serializer_class', exc_info=1)
@@ -45,7 +40,7 @@ class OrdersAPIList(generics.ListCreateAPIView):
         return Order.objects.filter(partner=partner)
 
     def create(self, request, *args, **kwargs):
-        logger.info('create', exc_info=1)
+        logger.info('order create', exc_info=1)
         serializer = self.get_serializer(data=request.data)
 
         if not serializer.is_valid():
@@ -89,14 +84,14 @@ class OrdersAPIList(generics.ListCreateAPIView):
                     # "status": 0, # status is text, and it will set automatically by spreadsheets
                 },
                 spreadsheet_id=partner.google_doc_id,
-                sheet_name=MAIN_SPREADSHEET_DOC_TAB
+                sheet_name=partner.google_sheet_name
             )
         except:
             capture_message("Something went wrong with inserting new order into the google spreadsheet")
-            return Response({
-                "error": ERROR_CODES[INSERT_ORDER_INTO_SPREADSHEET].get_message(),
-                "code": ERROR_CODES[INSERT_ORDER_INTO_SPREADSHEET].get_code()
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                CustomErrors(INSERT_ORDER_INTO_SPREADSHEET).generate_response(),
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         result = OrderSerializer(order)
 
         return Response(result.data, status=status.HTTP_201_CREATED)

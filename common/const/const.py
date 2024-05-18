@@ -8,13 +8,10 @@ load_dotenv()
 GOOGLE_SPREADSHEETS_CREDENTIALS_INFO =\
     os.getenv("GOOGLE_CREDENTIALS_INFO")
 MAIN_SPREADSHEET_DOC_ID=os.getenv("MAIN_SPREADSHEET_DOC_ID")
-MAIN_SPREADSHEET_DOC_TAB=os.getenv("MAIN_SPREADSHEET_DOC_TAB")
-MAIN_SPREADSHEET_DOC_START_ROW=os.getenv("MAIN_SPREADSHEET_DOC_START_ROW")
 
 # binance
-BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
-BINANCE_SECRET_KEY = os.getenv("BINANCE_SECRET_KEY")
 BASE_URL = "https://api.binance.com"  # production base url
+DEFAULT_BINANCE_ACCOUNT_ID = os.getenv("DEFAULT_BINANCE_ACCOUNT_ID")
 
 # http methods
 GET_METHOD = "GET"
@@ -22,3 +19,7 @@ POST_METHOD = "POST"
 PATCH_METHOD = "PATCH"
 PUT_METHOD = "PUT"
 DELETE_METHOD = "DELETE"
+
+# pem keys
+PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), encoding='utf8').decode('unicode_escape')
+PRIVATE_KEY = bytes(os.getenv("PRIVATE_KEY"), encoding='utf8').decode('unicode_escape')
