@@ -1,11 +1,9 @@
-import os
 import json
 import pprint
 
 import requests
 import base64
 import logging
-from django.conf import settings
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -16,6 +14,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAdminUser
 
 from common.decimal_encoder import DecimalEncoder
+from common.const import PUBLIC_KEY, PRIVATE_KEY
+
 from apps.orders.models import Order
 from apps.orders.serializers import OrderSerializer
 
@@ -30,16 +30,14 @@ def send_callback(
         callback_headers,
         data_bytes,
 ):
-    public_key_path = os.path.join(settings.BASE_DIR, 'public_key.pem')
-    private_key_path = os.path.join(settings.BASE_DIR, 'private_key.pem')
+    public_key_pem = bytes(PUBLIC_KEY, 'utf-8')
 
-    with open(public_key_path, 'rb') as key_file:
-        public_key_pem = key_file.read()
+    public_key = serialization.load_pem_public_key(
+        public_key_pem,
+        backend=default_backend()
+    )
+    private_key_pem = PRIVATE_KEY.encode('utf-8')
 
-    with open(private_key_path, 'rb') as key_file:
-        private_key_pem = key_file.read()
-
-    public_key = serialization.load_pem_public_key(public_key_pem, backend=default_backend())
     private_key = serialization.load_pem_private_key(
         private_key_pem,
         password=None,
@@ -115,7 +113,7 @@ class OrderAPIUpdate(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAdminUser, )
 
     def patch(self, request, *args, **kwargs):
-        pprint.pprint({'status': request.data['status']})
+        logger.info(f'order patch, status={request.data["status"]}', exc_info=1)
         if request.data['status'] and request.data['status'] == 5:
             instance = self.get_object()
 

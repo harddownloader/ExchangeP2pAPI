@@ -47,7 +47,9 @@ INSTALLED_APPS = [
 
     # apps
     'apps.orders.apps.OrdersConfig',
-    'apps.partners.apps.PartnersConfig'
+    'apps.partners.apps.PartnersConfig',
+    'apps.markets.apps.MarketsConfig',
+    'apps.market_monitors.apps.MarketMonitorsConfig',
 ]
 
 MIDDLEWARE = [

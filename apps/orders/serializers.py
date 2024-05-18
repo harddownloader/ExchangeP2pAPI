@@ -8,5 +8,4 @@ class OrderSerializer(serializers.ModelSerializer):
         exclude = ['partner']
 
 class P2PMarketOrdersSerializer(serializers.Serializer):
-    tradeType = serializers.ChoiceField(choices=["BUY", "SELL"])
-    payType = serializers.ChoiceField(choices=["Monobank", "PrivatBank"])
+    market_monitor_id = serializers.IntegerField(min_value=1)

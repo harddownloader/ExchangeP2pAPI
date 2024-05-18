@@ -27,13 +27,26 @@ from rest_framework_simplejwt.views import (
 )
 
 # views
+from apps.market_monitors.views import (
+    MarketMonitorCreateView,
+    MarketMonitorsRetrieveUpdateDestroyView,
+    P2PMarketOrdersViewSet,
+)
+from apps.markets.views import (
+    MarketAccountCreateView,
+    MarketsCreateView,
+    MarketsRetrieveUpdateDestroyView,
+    MarketAccountRetrieveUpdateDestroyView,
+    PayTypesCreateView,
+    PayTypesAccountRetrieveUpdateDestroyView,
+    FiatCurrencyCreateView,
+    FiatCurrencyAccountRetrieveUpdateDestroyView
+)
 from apps.orders.views import (
     OrdersAPIList,
     OrderAPIUpdate,
     OrderAPIDestroy,
-    P2PMarketOrdersViewSet,
 )
-
 from apps.partners.views import PartnersAPIList
 from .views import index
 
@@ -64,4 +77,24 @@ urlpatterns = [
 
     # partners (users)
     path('api/v1/partners', PartnersAPIList.as_view()),
+
+    # market_monitor
+    path('api/v1/marketmonitors', MarketMonitorCreateView.as_view(), name='market-monitor-list-create'),
+    path('api/v1/marketmonitors/<int:pk>/', MarketMonitorsRetrieveUpdateDestroyView.as_view(), name='market-monitor-retrieve-update-destroy'),
+
+    # markets
+    path('api/v1/market', MarketsCreateView.as_view(), name='market-list-create'),
+    path('api/v1/market/<int:pk>/', MarketsRetrieveUpdateDestroyView.as_view(), name='market-retrieve-update-destroy'),
+
+    # market accounts
+    path('api/v1/market-accounts', MarketAccountCreateView.as_view(), name='market-accounts-list-create'),
+    path('api/v1/market-accounts/<int:pk>/', MarketAccountRetrieveUpdateDestroyView.as_view(), name='markets-accounts-retrieve-update-destroy'),
+
+    # pay types
+    path('api/v1/pay-types', PayTypesCreateView.as_view(), name='pay-types-list-create'),
+    path('api/v1/pay-types/<int:pk>/', PayTypesAccountRetrieveUpdateDestroyView.as_view(), name='pay-types-retrieve-update-destroy'),
+
+    # fiat
+    path('api/v1/fiat', FiatCurrencyCreateView.as_view(), name='fiat-list-create'),
+    path('api/v1/fiat/<int:pk>/', FiatCurrencyAccountRetrieveUpdateDestroyView.as_view(), name='fiat-retrieve-update-destroy'),
 ]

@@ -5,7 +5,6 @@ from .models import Partner
 from .serializers import PartnerSerializer
 
 
-# Create your views here.
 class PartnersAPIList(generics.ListAPIView):
     permission_classes = (IsAdminUser, )
     queryset = Partner.objects.all()
