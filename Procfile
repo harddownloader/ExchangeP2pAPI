@@ -1,0 +1,1 @@
+web: gunicorn djangoP2pExchangeApi.wsgi
