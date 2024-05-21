@@ -1,6 +1,6 @@
 import hmac
 import hashlib
-import json
+import simplejson as json
 import time
 import logging
 import gspread
@@ -143,7 +143,7 @@ class P2PMarketOrdersViewSet(viewsets.ViewSet):
 
         try:
             market_monitor_inst = Radar.objects.get(pk=int(market_monitor_id))
-            market_monitor = json.loads(json.dumps(market_monitor_inst, default=vars))
+            market_monitor = json.loads(json.dumps(market_monitor_inst, default=vars, use_decimal=True))
         except Radar.DoesNotExist:
             return Response("market monitor by this ID not found", status=status.HTTP_404_NOT_FOUND)
 
@@ -206,8 +206,8 @@ class P2PMarketOrdersViewSet(viewsets.ViewSet):
             "publisherType": None,
             "rows": 10,
             "sort": sort_options[0],
-            "tradeType": trade_type
-            # "transAmount":
+            "tradeType": trade_type,
+            "transAmount": market_monitor["transAmount"]
         }
 
         time = send_public_request("/api/v3/time", binance_creds=binance_creds).get('serverTime', None)
