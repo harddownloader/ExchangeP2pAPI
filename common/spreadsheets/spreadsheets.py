@@ -79,14 +79,14 @@ def add_or_update_p2p_orders_list(orders: dict, spreadsheet_id: str, sheet_name:
             )
         )
 
-    new_rows_length = len(rows_data)
     worksheet.insert_rows(
         rows_data,
         row=first_row,
         value_input_option=ValueInputOption.raw,
     )
 
-    # clearing prev notes
-    start_clearing_row = first_row + new_rows_length
-    end_clearing_row = first_row + (new_rows_length * 2)
-    worksheet.delete_rows(start_clearing_row, end_clearing_row)
+    # # clearing prev notes
+    # new_rows_length = len(rows_data)
+    # start_clearing_row = first_row + new_rows_length
+    # end_clearing_row = first_row + (new_rows_length * 2)
+    # worksheet.delete_rows(start_clearing_row, end_clearing_row)
