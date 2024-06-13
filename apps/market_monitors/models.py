@@ -29,6 +29,12 @@ class Radar(models.Model):
     pay_type = models.ForeignKey(PayTypes, on_delete=models.SET_NULL, null=True)
     market = models.ForeignKey(Market, on_delete=models.SET_NULL, null=True)
     trade_type = models.CharField(max_length=4, choices=[(BUY_TRADE_TYPE, BUY_TRADE_TYPE), (SELL_TRADE_TYPE, SELL_TRADE_TYPE)], default=SELL_TRADE_TYPE)
+    transAmount = models.DecimalField(
+        max_digits=19,
+        decimal_places=2,
+        default=0,
+        help_text="the size of the amount in the order when searching for them on the market"
+    )
 
     class Meta:
         db_table_comment = 'reports system about p2p orders on the market'

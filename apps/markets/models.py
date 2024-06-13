@@ -24,6 +24,7 @@ class MarketAccount(models.Model):
     market = models.ForeignKey(Market, on_delete=models.CASCADE)
     api_key = encrypt(models.CharField(blank=True, null=True, max_length=300))
     secret_key = encrypt(models.CharField(blank=True, null=True, max_length=300))
+    google_auth_totp_code = encrypt(models.CharField(blank=True, null=True, max_length=20, default=None))
 
     class Meta:
         db_table = 'market_account'
