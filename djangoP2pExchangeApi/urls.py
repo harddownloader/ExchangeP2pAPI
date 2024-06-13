@@ -46,6 +46,7 @@ from apps.orders.views import (
     OrdersAPIList,
     OrderAPIUpdate,
     OrderAPIDestroy,
+    CreateMarketOrderView,
 )
 from apps.partners.views import PartnersAPIList
 from .views import index
@@ -53,48 +54,55 @@ from .views import index
 router = routers.DefaultRouter()
 router.register(r'v1/p2p-orders', P2PMarketOrdersViewSet, basename='P2PMarketOrders')
 
+API_PREFIX = 'api'
+
+API_PREFIX_V1 = f'{API_PREFIX}/v1'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index),
 
     # jwt
-    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path(f'{API_PREFIX_V1}/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path(f'{API_PREFIX_V1}/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path(f'{API_PREFIX_V1}/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     # orders
-    path('api/', include(router.urls)),
-    path('api/v1/orders', OrdersAPIList.as_view()),  # get all / post
+    path(f'{API_PREFIX}/', include(router.urls)),
+    path(f'{API_PREFIX_V1}/orders', OrdersAPIList.as_view()),  # get all / post
 
     # for admin
     # for partner
-    path('api/v1/orders/<int:pk>/', OrderAPIUpdate.as_view()),  # get,put,patch by id
+    path(f'{API_PREFIX_V1}/orders/<int:pk>/', OrderAPIUpdate.as_view()),  # get,put,patch by id
     path(
-        'api/v1/ordersdelete/<int:pk>/',
+        f'{API_PREFIX_V1}/ordersdelete/<int:pk>/',
         OrderAPIDestroy.as_view(),
         name='delete-orders'
     ),  # delete by id
 
     # partners (users)
-    path('api/v1/partners', PartnersAPIList.as_view()),
+    path(f'{API_PREFIX_V1}/partners', PartnersAPIList.as_view()),
 
     # market_monitor
-    path('api/v1/marketmonitors', MarketMonitorCreateView.as_view(), name='market-monitor-list-create'),
-    path('api/v1/marketmonitors/<int:pk>/', MarketMonitorsRetrieveUpdateDestroyView.as_view(), name='market-monitor-retrieve-update-destroy'),
+    path(f'{API_PREFIX_V1}/marketmonitors', MarketMonitorCreateView.as_view(), name='market-monitor-list-create'),
+    path(f'{API_PREFIX_V1}/marketmonitors/<int:pk>/', MarketMonitorsRetrieveUpdateDestroyView.as_view(), name='market-monitor-retrieve-update-destroy'),
 
     # markets
-    path('api/v1/market', MarketsCreateView.as_view(), name='market-list-create'),
-    path('api/v1/market/<int:pk>/', MarketsRetrieveUpdateDestroyView.as_view(), name='market-retrieve-update-destroy'),
+    path(f'{API_PREFIX_V1}/market', MarketsCreateView.as_view(), name='market-list-create'),
+    path(f'{API_PREFIX_V1}/market/<int:pk>/', MarketsRetrieveUpdateDestroyView.as_view(), name='market-retrieve-update-destroy'),
 
     # market accounts
-    path('api/v1/market-accounts', MarketAccountCreateView.as_view(), name='market-accounts-list-create'),
-    path('api/v1/market-accounts/<int:pk>/', MarketAccountRetrieveUpdateDestroyView.as_view(), name='markets-accounts-retrieve-update-destroy'),
+    path(f'{API_PREFIX_V1}/market-accounts', MarketAccountCreateView.as_view(), name='market-accounts-list-create'),
+    path(f'{API_PREFIX_V1}/market-accounts/<int:pk>/', MarketAccountRetrieveUpdateDestroyView.as_view(), name='markets-accounts-retrieve-update-destroy'),
+
+    # market orders
+    path(f'{API_PREFIX_V1}/market-orders', CreateMarketOrderView.as_view(), name='market-orders-create'),
 
     # pay types
-    path('api/v1/pay-types', PayTypesCreateView.as_view(), name='pay-types-list-create'),
-    path('api/v1/pay-types/<int:pk>/', PayTypesAccountRetrieveUpdateDestroyView.as_view(), name='pay-types-retrieve-update-destroy'),
+    path(f'{API_PREFIX_V1}/pay-types', PayTypesCreateView.as_view(), name='pay-types-list-create'),
+    path(f'{API_PREFIX_V1}/pay-types/<int:pk>/', PayTypesAccountRetrieveUpdateDestroyView.as_view(), name='pay-types-retrieve-update-destroy'),
 
     # fiat
-    path('api/v1/fiat', FiatCurrencyCreateView.as_view(), name='fiat-list-create'),
-    path('api/v1/fiat/<int:pk>/', FiatCurrencyAccountRetrieveUpdateDestroyView.as_view(), name='fiat-retrieve-update-destroy'),
+    path(f'{API_PREFIX_V1}/fiat', FiatCurrencyCreateView.as_view(), name='fiat-list-create'),
+    path(f'{API_PREFIX_V1}/fiat/<int:pk>/', FiatCurrencyAccountRetrieveUpdateDestroyView.as_view(), name='fiat-retrieve-update-destroy'),
 ]

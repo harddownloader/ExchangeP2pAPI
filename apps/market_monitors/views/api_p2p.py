@@ -19,6 +19,7 @@ from rest_framework.response import Response
 
 from apps.market_monitors.const import BUY_TRADE_TYPE, SELL_TRADE_TYPE
 from apps.market_monitors.models import Radar
+from apps.markets.binance import sort_options, params
 from apps.markets.models import FiatCurrency, PayTypes, MarketAccount
 from apps.orders.serializers import P2PMarketOrdersSerializer
 from common.spreadsheets import (
@@ -65,6 +66,8 @@ def dispatch_request(http_method: str, binance_key: str):
         "Content-Type": "application/json;charset=utf-8",
         "X-MBX-APIKEY": binance_key
     })
+
+    pprint.pprint(session.headers, indent=4)
 
     wrapper = {
         "GET": session.get,
@@ -187,13 +190,6 @@ class P2PMarketOrdersViewSet(viewsets.ViewSet):
         else:
             return Response("correct 'trade_type' of market_monitor was not found", status=status.HTTP_404_NOT_FOUND)
 
-
-        client_type_options = ('web', 'ios', 'android')
-        sort_options = ('asc', 'desc')
-        params = {
-            'recvWindow': 60000, # use it for all requests
-            'clientType': client_type_options[0]
-        }
         body = {
             "additionalKycVerifyFilter": 0,
             "asset": "USDT",
