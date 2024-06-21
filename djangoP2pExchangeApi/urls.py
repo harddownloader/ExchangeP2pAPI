@@ -49,6 +49,7 @@ from apps.orders.views import (
     CreateMarketOrderView,
 )
 from apps.partners.views import PartnersAPIList
+from apps.googlesheets.views import CreateGSTaskAPIView
 from .views import index
 
 router = routers.DefaultRouter()
@@ -61,6 +62,9 @@ API_PREFIX_V1 = f'{API_PREFIX}/v1'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index),
+
+    # google spreadsheet triggers
+    path(f'{API_PREFIX_V1}/googlesheets/create-task', CreateGSTaskAPIView.as_view()),
 
     # jwt
     path(f'{API_PREFIX_V1}/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
