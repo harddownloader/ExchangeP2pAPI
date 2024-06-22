@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import sentry_sdk
+from pymongo import MongoClient
 
 load_dotenv()
 
@@ -113,6 +114,10 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# custom mongoDB connection and database
+MONGO_CLIENT = MongoClient(os.getenv('MONGODB_CONNECTION_STRING'))
+APP_MONGO_CLIENT = MONGO_CLIENT['app']
 
 
 # Password validation
